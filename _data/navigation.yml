@@ -1,9 +1,8 @@
-main:
-  - title: Home
-    url: /
-  - title: About
-    url: /about/
-  - title: Team
-    url: /team/
-  - title: Publications
-    url: /publications/
+- title: Home
+  url: /
+- title: About
+  url: /about/
+- title: Team
+  url: /team/
+- title: Publications
+  url: /publications/
