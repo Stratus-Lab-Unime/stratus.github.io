@@ -11,7 +11,7 @@ title: Stratus Lab Unime
 description: Secure TRustless Autonomous Technologies for Ubiquitous Systems Lab
 url: "https://stratus-lab-unime.github.io"
 baseurl: ""
-skin: "default"
+skin: "/assets/css/skins/default.css"
 
 paginate: 5
 paginate_path: /page:num/
