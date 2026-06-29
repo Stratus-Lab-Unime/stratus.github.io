@@ -28,7 +28,7 @@ def fetch_all(query):
             "query": query,
             "count": count,
             "start": start,
-            "field": "dc:identifier,dc:title,dc:creator,prism:publicationName,prism:coverDate,prism:doi,subtypeDescription,prism:pageRange,volume,issue,author",
+            "field": "dc:identifier,dc:title,dc:creator,prism:publicationName,prism:coverDate,prism:doi,subtypeDescription,prism:pageRange,volume,issue,author,authname",
         }
         r = requests.get(url, headers=HEADERS, params=params)
         print(f"  Request start={start}: HTTP {r.status_code}")
@@ -60,10 +60,15 @@ def entry_to_bibtex(entry, seen_keys):
     issue = entry.get("issue", "")
 
     authors_raw = entry.get("author", [])
-    if authors_raw:
+    authnames = entry.get("authname", [])
+    if authors_raw and isinstance(authors_raw, list) and len(authors_raw) > 0 and authors_raw[0].get("surname"):
         author_str = " and ".join(
             f"{a.get('surname', '')}, {a.get('given-name', '')}"
             for a in authors_raw
+        )
+    elif authnames and isinstance(authnames, list):
+        author_str = ", ".join(
+            a.get("$", "") for a in authnames if a.get("$")
         )
     else:
         author_str = creator
