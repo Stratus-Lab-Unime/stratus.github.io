@@ -1,0 +1,40 @@
+name: Update Publications from Scopus
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Ogni lunedì alle 06:00 UTC
+  workflow_dispatch:      # Eseguibile manualmente
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch papers from Scopus
+        env:
+          SCOPUS_API_KEY: ${{ secrets.SCOPUS_API_KEY }}
+        run: python .github/scripts/fetch_scopus.py
+
+      - name: Convert BibTeX to Markdown
+        run: python .github/scripts/bib_to_md.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _data/publications.bib publications.md
+          git diff --staged --quiet || git commit -m "Auto-update publications from Scopus"
+          git push
